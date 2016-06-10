@@ -27,9 +27,9 @@ int* SumoRobot::getLineSensorReadings(){
 }
 
 int* SumoRobot::getDistanceSensorReadings(){
-	m_distanceSensorReadings[1] = analogRead(LeftDistanceSensor);//Left Distance Sensor
-	m_distanceSensorReadings[2] = analogRead(RightDistanceSensor);//Right Distance Sensor
-	m_distanceSensorReadings[3] = analogRead(BackDistanceSensor);//Back Distance Sensor
+	m_distanceSensorReadings[0] = analogRead(LeftDistanceSensor);//Left Distance Sensor
+	m_distanceSensorReadings[1] = analogRead(RightDistanceSensor);//Right Distance Sensor
+	m_distanceSensorReadings[2] = analogRead(BackDistanceSensor);//Back Distance Sensor
 	return m_distanceSensorReadings;
 }
 
