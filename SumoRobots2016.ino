@@ -32,13 +32,13 @@ void loop() {
   
   Serial.println("---  Distance Sensors ---");
   
-  debugStr = "Left Distance Sensor: " + distanceSensorReadings[0];
+  debugStr = String(distanceSensorReadings[0]);
   Serial.println(debugStr);
   
-  debugStr = "Right Distance Sensor: " + distanceSensorReadings[1];
+  debugStr = String(distanceSensorReadings[1]);
   Serial.println(debugStr);
   
-  debugStr = "Back Distance Sensor: " + distanceSensorReadings[2];
+  debugStr = String(distanceSensorReadings[2]);
   Serial.println(debugStr);
 
   delay(2000); //Sleep for 2 seconds
