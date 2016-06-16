@@ -6,6 +6,9 @@
 
 #define DISTANCE_SENSOR_THRESHOLD 200
 #define NUM_READINGS 5
+#define COUNTS_FOR_BACKING_UP 10
+#define COUNTS_FOR_TURN 5
+#define COUNTS_FOR_FULL_TURN 20
 
 class SumoRobot{
 	private:

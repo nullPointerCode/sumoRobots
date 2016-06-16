@@ -158,21 +158,21 @@ void SumoRobot::go(){
 		
 		//check if robot is on the white ring
 		if (m_lineSensorReadings[0] && m_lineSensorReadings[1]){
-			m_actionBack = 10; //go back for 10 counts
-			m_actionSharpLeft = 5;  //turn sharp left for 5 counts
+			m_actionBack = COUNTS_FOR_BACKING_UP; //go back for 10 counts
+			m_actionSharpLeft = COUNTS_FOR_TURN;  //turn sharp left for 5 counts
 			return;
 		} else if (m_lineSensorReadings[0]){
-			m_actionBack = 5;
-			m_actionSharpLeft = 10;
+			m_actionBack = COUNTS_FOR_BACKING_UP/2;
+			m_actionSharpLeft = COUNTS_FOR_TURN;
 			return;
 		} else if (m_lineSensorReadings[1]){
-			m_actionBack = 5;
-			m_actionSharpRight = 10;
+			m_actionBack = COUNTS_FOR_BACKING_UP/2;
+			m_actionSharpRight = COUNTS_FOR_TURN;
 			return;
 		} else if (m_lineSensorReadings[2]){
 			//we are being pushed back, push forward  and then turn
-			m_actionForward = 10;
-			m_actionSharpRight = 3;
+			m_actionForward = COUNTS_FOR_BACKING_UP;
+			m_actionSharpRight = COUNTS_FOR_TURN;
 		}
 		
 		//check if we see the other robot
@@ -190,7 +190,7 @@ void SumoRobot::go(){
 			go(255, -255);
 		} else if (m_distanceSensorReadings[2] >= DISTANCE_SENSOR_THRESHOLD){
 			//we see the other robot behind us, turn around
-			m_actionSharpLeft = 10;
+			m_actionSharpLeft = COUNTS_FOR_FULL_TURN;
 		}
 		
 		//let's look for the other robot
