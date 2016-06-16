@@ -9,14 +9,12 @@ void setup() {
 void loop() {
   //comment/uncomment the following lines to test different robot speeds
   
-  robot.go(128, 128);//go forward at medium speed  
-  //robot.go(-128, 128);//go back at medium speed
-  //robot.go(0, 0);//stop the robot
-  //robot.go(0, 128);//turn left
-  //robot.go(128, 0);//turn right
+  robot.go();
+  delay(100);
 
+  /*
   int* distanceSensorReadings = robot.getDistanceSensorReadings();
-  int* lineSensorReadings = robot.getLineSensorReadings();
+  bool* lineSensorReadings = robot.getLineSensorReadings();
 
   Serial.println("---  Line Sensors ---");
   String debugStr;
@@ -42,4 +40,5 @@ void loop() {
   Serial.println(debugStr);
 
   delay(2000); //Sleep for 2 seconds
+  */
 }

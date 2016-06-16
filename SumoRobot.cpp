@@ -19,17 +19,61 @@ SumoRobot::SumoRobot(){
 }
 
 
-int* SumoRobot::getLineSensorReadings(){
-	m_lineSensorReadings[0] = digitalRead(LeftLineSensor);//Left Line Sensor
-	m_lineSensorReadings[1] = digitalRead(RightLineSensor);//Right Line Sensor
-	m_lineSensorReadings[2] = digitalRead(BackLineSensor);//Back Line Sensor
+bool* SumoRobot::getLineSensorReadings(){
+	int left = 0;
+	int right = 0;
+	int back = 0;
+	
+	//Average readings
+	for (int i = 0; i < NUM_READINGS; i++){
+		if (digitalRead[LeftDistanceSensor]){
+			left += 1;
+		}
+		if (digitalRead[RightLineSensor]){
+			right += 1;
+		}
+		if (digitalRead[BackLineSensor]){
+			back += 1;
+		}
+	}
+	if (left >= NUM_READINGS/2){
+		m_lineSensorReadings[0] = true;
+	} else {
+		m_lineSensorReadings[0] = false;
+	}
+	
+	if (right >= NUM_READINGS/2){
+		m_lineSensorReadings[1] = true;
+	} else {
+		m_lineSensorReadings[1] = false;
+	}
+	
+	if (back >= NUM_READINGS/2){
+		m_lineSensorReadings[2] = true;
+	} else {
+		m_lineSensorReadings[2] = false;
+	}
+	
 	return m_lineSensorReadings;
 }
 
 int* SumoRobot::getDistanceSensorReadings(){
-	m_distanceSensorReadings[0] = analogRead(LeftDistanceSensor);//Left Distance Sensor
-	m_distanceSensorReadings[1] = analogRead(RightDistanceSensor);//Right Distance Sensor
-	m_distanceSensorReadings[2] = analogRead(BackDistanceSensor);//Back Distance Sensor
+	
+	m_distanceSensorReadings[0] = 0;//Left Distance Sensor
+	m_distanceSensorReadings[1] = 0;//Right Distance Sensor
+	m_distanceSensorReadings[2] = 0;//Back Distance Sensor
+	
+	//Average readings
+	for (int i = 0; i < NUM_READINGS; i++){
+		m_distanceSensorReadings[0] += analogRead(LeftDistanceSensor);
+		m_distanceSensorReadings[1] += analogRead(RightDistanceSensor);
+		m_distanceSensorReadings[2] += analogRead(BackDistanceSensor);
+	}
+	
+	m_distanceSensorReadings[0] = m_distanceSensorReadings[0] / NUM_READINGS;
+	m_distanceSensorReadings[1] = m_distanceSensorReadings[1] / NUM_READINGS;
+	m_distanceSensorReadings[2] = m_distanceSensorReadings[2] / NUM_READINGS;
+	
 	return m_distanceSensorReadings;
 }
 
@@ -76,5 +120,80 @@ void SumoRobot::go(int left, int right){
 	} else {
 		//Stop
 		analogWrite(RightMotorSpeed, 0);
+	}
+}
+
+bool SumoRobot::processActions(){
+	if (m_actionBack > 0){
+		m_actionBack--;
+		go(-255, -255);
+		return true;
+	}
+	
+	if (m_actionSharpRight > 0){
+		m_actionSharpRight--;
+		go(255, -255);
+		return true;
+	}
+	
+	if (m_actionSharpLeft > 0){
+		m_actionSharpLeft--;
+		go(-255, 255);
+		return true;
+	}
+	
+	if (m_actionForward > 0){
+		m_actionForward--;
+		go(255, 255);
+		return true;
+	}
+	
+	return false;
+}
+
+void SumoRobot::go(){
+	
+	if (!processActions()){	
+		getLineSensorReadings();		
+		
+		//check if robot is on the white ring
+		if (m_lineSensorReadings[0] && m_lineSensorReadings[1]){
+			m_actionBack = 10; //go back for 10 counts
+			m_actionSharpLeft = 5;  //turn sharp left for 5 counts
+			return;
+		} else if (m_lineSensorReadings[0]){
+			m_actionBack = 5;
+			m_actionSharpLeft = 10;
+			return;
+		} else if (m_lineSensorReadings[1]){
+			m_actionBack = 5;
+			m_actionSharpRight = 10;
+			return;
+		} else if (m_lineSensorReadings[2]){
+			//we are being pushed back, push forward  and then turn
+			m_actionForward = 10;
+			m_actionSharpRight = 3;
+		}
+		
+		//check if we see the other robot
+		getDistanceSensorReadings();
+		
+		if (m_distanceSensorReadings[0] >= DISTANCE_SENSOR_THRESHOLD && 
+			m_distanceSensorReadings[1] >= DISTANCE_SENSOR_THRESHOLD){
+			//we see the other robot in front of us, attack!
+			go(255, 255);
+		} else if (m_distanceSensorReadings[0] >= DISTANCE_SENSOR_THRESHOLD){
+			//we see the other robot on our left, sharp turn left
+			go(-255, 255);
+		} else if (m_distanceSensorReadings[1] >= DISTANCE_SENSOR_THRESHOLD){
+			//we see the other robot on our right, sharp turn right
+			go(255, -255);
+		} else if (m_distanceSensorReadings[2] >= DISTANCE_SENSOR_THRESHOLD){
+			//we see the other robot behind us, turn around
+			m_actionSharpLeft = 10;
+		}
+		
+		//let's look for the other robot
+		go(100, 125);
 	}
 }
