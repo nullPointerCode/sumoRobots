@@ -1,44 +1,23 @@
 #include "SumoRobot.h"
+#include <SoftwareSerial.h>
 
+#define TX_PIN 10
+#define RX_PIN 10
 
 SumoRobot robot;
+SoftwareSerial mySerial(TX_PIN, RX_PIN);
+prevText = "";
+
 void setup() {
-  Serial.begin(9600);//for debugging
+  mySerial.begin(9600);//for debugging
+  mySerial.setTimeout(100);
 }
 
 void loop() {
-  //comment/uncomment the following lines to test different robot speeds
-  
-  robot.go();
+  String text = robot.go();
+  if (text != prevText){
+	mySerial.println(text);
+	prevText = text;
+  }
   delay(100);
-
-  /*
-  int* distanceSensorReadings = robot.getDistanceSensorReadings();
-  bool* lineSensorReadings = robot.getLineSensorReadings();
-
-  Serial.println("---  Line Sensors ---");
-  String debugStr;
-  
-  debugStr = "Left Line Sensor: " + lineSensorReadings[0];
-  Serial.println(debugStr);
-  
-  debugStr = "Right Line Sensor: " + lineSensorReadings[1];
-  Serial.println(debugStr);
-  
-  debugStr = "Back Line Sensor: " + lineSensorReadings[2];
-  Serial.println(debugStr);
-  
-  Serial.println("---  Distance Sensors ---");
-  
-  debugStr = String(distanceSensorReadings[0]);
-  Serial.println(debugStr);
-  
-  debugStr = String(distanceSensorReadings[1]);
-  Serial.println(debugStr);
-  
-  debugStr = String(distanceSensorReadings[2]);
-  Serial.println(debugStr);
-
-  delay(2000); //Sleep for 2 seconds
-  */
 }

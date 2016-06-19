@@ -127,52 +127,57 @@ bool SumoRobot::processActions(){
 	if (m_actionBack > 0){
 		m_actionBack--;
 		go(-255, -255);
+		m_currAction = "Going back";
 		return true;
 	}
 	
 	if (m_actionSharpRight > 0){
 		m_actionSharpRight--;
 		go(255, -255);
+		m_currAction = "Sharp Right";
 		return true;
 	}
 	
 	if (m_actionSharpLeft > 0){
 		m_actionSharpLeft--;
 		go(-255, 255);
+		m_currAction = "Sharp Left";
 		return true;
 	}
 	
 	if (m_actionForward > 0){
 		m_actionForward--;
 		go(255, 255);
+		m_currAction = "Going forward"
 		return true;
 	}
 	
 	return false;
 }
 
-void SumoRobot::go(){
+String SumoRobot::go(){
 	
 	if (!processActions()){	
-		getLineSensorReadings();		
+		getLineSensorReadings();
 		
 		//check if robot is on the white ring
 		if (m_lineSensorReadings[0] && m_lineSensorReadings[1]){
 			m_actionBack = COUNTS_FOR_BACKING_UP; //go back for 10 counts
 			m_actionSharpLeft = COUNTS_FOR_TURN;  //turn sharp left for 5 counts
-			return;
+			return "Both line sensors are active, will back up and turn";
 		} else if (m_lineSensorReadings[0]){
 			m_actionBack = COUNTS_FOR_BACKING_UP/2;
 			m_actionSharpLeft = COUNTS_FOR_TURN;
-			return;
+			return "Left line sensor is active, will back up and turn";
 		} else if (m_lineSensorReadings[1]){
 			m_actionBack = COUNTS_FOR_BACKING_UP/2;
 			m_actionSharpRight = COUNTS_FOR_TURN;
-			return;
+			return "Right line sensor is active, will back up and turn";
 		} else if (m_lineSensorReadings[2]){
 			//we are being pushed back, push forward  and then turn
 			m_actionForward = COUNTS_FOR_BACKING_UP;
 			m_actionSharpRight = COUNTS_FOR_TURN;
+			return "Back line sensor is active, will go forward and turn";
 		}
 		
 		//check if we see the other robot
@@ -182,18 +187,25 @@ void SumoRobot::go(){
 			m_distanceSensorReadings[1] >= DISTANCE_SENSOR_THRESHOLD){
 			//we see the other robot in front of us, attack!
 			go(255, 255);
+			return "Both distance sensors detect the other robot, attack full speed forward";
 		} else if (m_distanceSensorReadings[0] >= DISTANCE_SENSOR_THRESHOLD){
 			//we see the other robot on our left, sharp turn left
 			go(-255, 255);
+			return "Left distance sensors detects the other robot, sharp left";
 		} else if (m_distanceSensorReadings[1] >= DISTANCE_SENSOR_THRESHOLD){
 			//we see the other robot on our right, sharp turn right
 			go(255, -255);
+			return "Right distance sensors detects the other robot, sharp right";
 		} else if (m_distanceSensorReadings[2] >= DISTANCE_SENSOR_THRESHOLD){
 			//we see the other robot behind us, turn around
 			m_actionSharpLeft = COUNTS_FOR_FULL_TURN;
+			return "Back distance sensors detects the other robot, turn around";
 		}
 		
 		//let's look for the other robot
 		go(100, 125);
+		return "Find the other robot";
+	} else {
+		return "Executing previously issued action: " + m_currAction;
 	}
 }

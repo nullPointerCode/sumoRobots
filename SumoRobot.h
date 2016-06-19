@@ -20,13 +20,15 @@ class SumoRobot{
 		int m_actionSharpLeft = 0;
 		int m_actionForward = 0;
 		
+		String m_currAction = "";
+		
 		bool processActions();
 		
 		void go(int left, int right);
 
 	public:
 		SumoRobot();
-		void go();
+		String go();
 		bool* getLineSensorReadings();
 		int* getDistanceSensorReadings();
 };
