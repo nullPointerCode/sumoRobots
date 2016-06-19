@@ -148,7 +148,7 @@ bool SumoRobot::processActions(){
 	if (m_actionForward > 0){
 		m_actionForward--;
 		go(255, 255);
-		m_currAction = "Going forward"
+		m_currAction = "Going forward";
 		return true;
 	}
 	

@@ -6,7 +6,7 @@
 
 SumoRobot robot;
 SoftwareSerial mySerial(TX_PIN, RX_PIN);
-prevText = "";
+String prevText = "";
 
 void setup() {
   mySerial.begin(9600);//for debugging
