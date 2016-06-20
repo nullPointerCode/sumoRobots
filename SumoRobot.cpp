@@ -26,13 +26,13 @@ bool* SumoRobot::getLineSensorReadings(){
 	
 	//Average readings
 	for (int i = 0; i < NUM_READINGS; i++){
-		if (digitalRead(LeftLineSensor) == HIGH){
+		if (digitalRead(LeftLineSensor) == LOW){
 			left += 1;
 		}
-		if (digitalRead(RightLineSensor) == HIGH){
+		if (digitalRead(RightLineSensor) == LOW){
 			right += 1;
 		}
-		if (digitalRead(BackLineSensor) == HIGH){
+		if (digitalRead(BackLineSensor) == LOW){
 			back += 1;
 		}
 	}
