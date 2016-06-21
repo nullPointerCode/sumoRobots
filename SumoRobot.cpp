@@ -19,43 +19,41 @@ SumoRobot::SumoRobot(){
 }
 
 
-bool* SumoRobot::getLineSensorReadings(){
-	int left = 0;
-	int right = 0;
-	int back = 0;
+int* SumoRobot::getLineSensorReadings(){
+	
+	int left = 0;//Left Line Sensor
+	int right = 0;//Right Line Sensor
+	int back = 0;//Back Line Sensor
 	
 	//Average readings
 	for (int i = 0; i < NUM_READINGS; i++){
-		if (digitalRead(LeftLineSensor) == LOW){
-			left += 1;
-		}
-		if (digitalRead(RightLineSensor) == LOW){
-			right += 1;
-		}
-		if (digitalRead(BackLineSensor) == LOW){
-			back += 1;
-		}
+		left += analogRead(LeftLineSensor);
+		right += analogRead(RightLineSensor);
+		back += analogRead(BackLineSensor);
 	}
-	if (left >= NUM_READINGS/2){
+	
+	if (left <= NUM_READINGS * LINE_SENSOR_THRESHOLD){
 		m_lineSensorReadings[0] = true;
 	} else {
 		m_lineSensorReadings[0] = false;
 	}
 	
-	if (right >= NUM_READINGS/2){
+	if (right <= NUM_READINGS * LINE_SENSOR_THRESHOLD){
 		m_lineSensorReadings[1] = true;
 	} else {
 		m_lineSensorReadings[1] = false;
 	}
 	
-	if (back >= NUM_READINGS/2){
+	if (back <= NUM_READINGS * LINE_SENSOR_THRESHOLD){
 		m_lineSensorReadings[2] = true;
 	} else {
 		m_lineSensorReadings[2] = false;
 	}
 	
+	
 	return m_lineSensorReadings;
 }
+
 
 int* SumoRobot::getDistanceSensorReadings(){
 	
