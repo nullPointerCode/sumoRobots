@@ -19,7 +19,7 @@ SumoRobot::SumoRobot(){
 }
 
 
-int* SumoRobot::getLineSensorReadings(){
+bool* SumoRobot::getLineSensorReadings(){
 	
 	int left = 0;//Left Line Sensor
 	int right = 0;//Right Line Sensor
