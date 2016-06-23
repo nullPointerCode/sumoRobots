@@ -21,6 +21,10 @@ class SumoRobot{
 		int m_actionSharpLeft = 0;
 		int m_actionForward = 0;
 		
+		bool m_maxSpeed = 255;
+		bool m_backDistanceSensorEnabled = false;
+		bool m_backLineSensorEnabled = false;
+		
 		String m_currAction = "";
 		
 		bool processActions();
@@ -30,8 +34,19 @@ class SumoRobot{
 	public:
 		SumoRobot();
 		String go();
+    void go(int);
 		bool* getLineSensorReadings();
 		int* getDistanceSensorReadings();
+    void setMaxSpeed(int maxSpeed){
+      m_maxSpeed = maxSpeed;
+    }
+    void setBackDistanceSensorEnabled(bool backDistanceSensorEnabled){
+      m_backDistanceSensorEnabled = backDistanceSensorEnabled;
+    }
+    void setBackLineSensorEnabled(bool backLineSensorEnabled){
+      m_backLineSensorEnabled = backLineSensorEnabled;
+    }
+   
 };
 
 #endif

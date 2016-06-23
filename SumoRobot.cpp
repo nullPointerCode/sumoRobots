@@ -44,7 +44,7 @@ bool* SumoRobot::getLineSensorReadings(){
 		m_lineSensorReadings[1] = false;
 	}
 	
-	if (back <= NUM_READINGS * LINE_SENSOR_THRESHOLD){
+	if (m_backLineSensorEnabled && back <= NUM_READINGS * LINE_SENSOR_THRESHOLD){
 		m_lineSensorReadings[2] = true;
 	} else {
 		m_lineSensorReadings[2] = false;
@@ -70,7 +70,12 @@ int* SumoRobot::getDistanceSensorReadings(){
 	
 	m_distanceSensorReadings[0] = m_distanceSensorReadings[0] / NUM_READINGS;
 	m_distanceSensorReadings[1] = m_distanceSensorReadings[1] / NUM_READINGS;
-	m_distanceSensorReadings[2] = m_distanceSensorReadings[2] / NUM_READINGS;
+	
+	if (m_backDistanceSensorEnabled){
+		m_distanceSensorReadings[2] = m_distanceSensorReadings[2] / NUM_READINGS;
+	} else {
+		m_distanceSensorReadings[2] = 0;
+	}
 	
 	return m_distanceSensorReadings;
 }
@@ -80,6 +85,11 @@ int* SumoRobot::getDistanceSensorReadings(){
 //The speed should be between -255 (reverse) and +255 (forward)
 //A speed of 0 indicates a stop
 void SumoRobot::go(int left, int right){
+	
+	//scale down the speeds
+	left = (left * m_maxSpeed)/255;
+	right = (right * m_maxSpeed)/255;
+	
 	if (left > 0){//Left Motor Forward
 		if (left > 255){
 			left = 255;
@@ -119,6 +129,15 @@ void SumoRobot::go(int left, int right){
 		//Stop
 		analogWrite(RightMotorSpeed, 0);
 	}
+}
+
+void SumoRobot::go(int command){
+  int x = command / 100;
+  int y = command - x * 100;
+
+  x = ((x - 50) * 255) / 50;
+  y = ((y - 50) * 255) / 50;
+  go(x, y);
 }
 
 bool SumoRobot::processActions(){
